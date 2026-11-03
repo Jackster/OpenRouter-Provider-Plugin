@@ -1,6 +1,8 @@
 # OpenCode OpenRouter Provider
 
 An OpenCode terminal and Desktop plugin that lists the upstream providers for the active OpenRouter model and pins the provider you select.
+<img width="1376" height="655" alt="image" src="https://github.com/user-attachments/assets/fd5c1544-b13b-4489-b6ce-c09ee81e82cd" />
+
 
 ## Features
 
