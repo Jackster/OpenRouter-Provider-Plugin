@@ -12,17 +12,45 @@ An OpenCode terminal and Desktop plugin that lists the upstream providers for th
 - `/openrouter` (or `/or-provider`) opens a searchable terminal provider picker.
 - Terminal and Desktop selections share the same per-model state and refresh every 60 seconds by default.
 
-## Install from a local checkout
+## Install
 
 Requires OpenCode 2.2.5 or newer. Desktop support uses OpenCode's experimental GUI plugin API.
+
+### Ask your AI assistant
+
+Paste this into OpenCode or any AI coding assistant:
+
+```text
+Install the OpenCode plugin "opencode-openrouter-provider" from
+https://github.com/Jackster/opencode-openrouter-provider, add it to my
+OpenCode configuration, and tell me how to restart so it takes effect.
+```
+
+### From the command line
+
+```sh
+opencode plugin add github:Jackster/opencode-openrouter-provider
+```
+
+### Manual configuration
+
+Add the Git package specifier to the `plugins` array in your global `opencode.json`:
+
+```json
+{
+  "plugins": [
+    "github:Jackster/opencode-openrouter-provider"
+  ]
+}
+```
+
+### From a local checkout
 
 ```sh
 opencode plugin add /absolute/path/to/opencode-openrouter-provider
 ```
 
-The package exports `./server`, `./tui`, and `./gui-experimental`; OpenCode discovers them from the same plugin entry. Restart the terminal after installation or an upgrade. In Desktop, open **Settings > Extensions > Plugins**, ensure the plugin is enabled, and click **Reload** after upgrading.
-
-For manual installation, add the package path to the `plugins` array in your global `opencode.json`. No separate `tui.json` entry is needed:
+For a manual local installation, add a `file://` URL to the `plugins` array in your global `opencode.json`:
 
 ```json
 {
@@ -31,6 +59,8 @@ For manual installation, add the package path to the `plugins` array in your glo
   ]
 }
 ```
+
+The package exports `./server`, `./tui`, and `./gui-experimental`; OpenCode discovers them from the same plugin entry. Restart the terminal after installation or an upgrade. In Desktop, open **Settings > Extensions > Plugins**, ensure the plugin is enabled, and click **Reload** after upgrading.
 
 ## Use
 

@@ -5,6 +5,12 @@
   "description": "Select and hard-pin OpenRouter upstream providers from the OpenCode terminal or Desktop sidebar, with live pricing and performance metrics.",
   "license": "MIT",
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Jackster/opencode-openrouter-provider.git"
+  },
+  "homepage": "https://github.com/Jackster/opencode-openrouter-provider#readme",
+  "bugs": "https://github.com/Jackster/opencode-openrouter-provider/issues",
   "main": "./src/server.ts",
   "exports": {
     "./gui-experimental": "./dist/gui-experimental.cjs",
