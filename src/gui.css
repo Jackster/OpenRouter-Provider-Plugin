@@ -1,0 +1,93 @@
+.orp-panel {
+  --orp-cheapest: #15803d;
+  --orp-most-expensive: #b91c1c;
+  --orp-option-background: #ffffff;
+  --orp-option-text: #111827;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  min-width: 0;
+  padding: 12px;
+  color: inherit;
+  color-scheme: light;
+  font: inherit;
+}
+
+.orp-panel[data-appearance="dark"] {
+  --orp-cheapest: #4ade80;
+  --orp-most-expensive: #f87171;
+  --orp-option-background: #1f2937;
+  --orp-option-text: #f9fafb;
+  color-scheme: dark;
+}
+
+.orp-panel *, .orp-panel *::before { box-sizing: border-box; }
+.orp-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+.orp-heading-text { min-width: 0; }
+.orp-title { margin: 0 0 3px; font-size: 13px; font-weight: 650; }
+.orp-model { overflow-wrap: anywhere; font-size: 11px; line-height: 1.4; opacity: 0.65; }
+.orp-sort-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; min-width: 0; }
+.orp-sort-label { flex: 0 0 auto; font-size: 11px; opacity: 0.65; }
+.orp-sort {
+  min-width: 0;
+  max-width: 70%;
+  padding: 5px 24px 5px 8px;
+  border: 1px solid color-mix(in srgb, currentColor 18%, transparent);
+  border-radius: 6px;
+  background: color-mix(in srgb, currentColor 5%, transparent);
+  color: inherit;
+  font: inherit;
+  font-size: 11px;
+  cursor: pointer;
+}
+.orp-sort:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
+.orp-sort option { background: var(--orp-option-background); color: var(--orp-option-text); }
+.orp-muted { margin: 0; font-size: 12px; line-height: 1.5; opacity: 0.65; }
+.orp-status { display: flex; align-items: center; gap: 8px; min-height: 24px; font-size: 12px; opacity: 0.7; }
+.orp-error { margin: 0; font-size: 12px; line-height: 1.5; overflow-wrap: anywhere; }
+.orp-list { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+
+.orp-choice {
+  appearance: none;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  padding: 11px;
+  border: 1px solid color-mix(in srgb, currentColor 15%, transparent);
+  border-radius: 7px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.orp-choice:hover:not(:disabled) { background: color-mix(in srgb, currentColor 5%, transparent); }
+.orp-choice:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
+.orp-choice:disabled { cursor: wait; opacity: 0.65; }
+.orp-choice[data-selected="true"] { border-color: color-mix(in srgb, currentColor 55%, transparent); background: color-mix(in srgb, currentColor 7%, transparent); }
+.orp-choice-heading { display: flex; align-items: flex-start; gap: 7px; min-width: 0; }
+.orp-radio { flex: 0 0 auto; font-size: 12px; line-height: 1.35; }
+.orp-provider { min-width: 0; overflow-wrap: anywhere; font-size: 12px; font-weight: 600; line-height: 1.4; }
+.orp-variants { flex: 0 0 auto; margin-left: auto; font-size: 10px; font-weight: 400; opacity: 0.6; }
+.orp-automatic-detail { padding-left: 19px; font-size: 11px; line-height: 1.4; opacity: 0.65; }
+
+.orp-prices { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; padding-left: 19px; }
+.orp-price { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.orp-price-label { font-size: 10px; line-height: 1.3; opacity: 0.6; }
+.orp-price-value { font-size: 11px; font-variant-numeric: tabular-nums; line-height: 1.35; white-space: nowrap; }
+.orp-price-value[data-price-extreme="cheapest"] { color: var(--orp-cheapest); font-weight: 650; }
+.orp-price-value[data-price-extreme="most-expensive"] { color: var(--orp-most-expensive); font-weight: 650; }
+.orp-metrics { padding-left: 19px; font-size: 10px; font-variant-numeric: tabular-nums; line-height: 1.4; opacity: 0.65; overflow-wrap: anywhere; }
+.orp-footer { padding-top: 2px; font-size: 10px; line-height: 1.5; opacity: 0.55; }
+
+@media (max-width: 340px) {
+  .orp-panel { padding: 9px; }
+  .orp-prices { gap: 4px; padding-left: 0; }
+  .orp-metrics, .orp-automatic-detail { padding-left: 0; }
+}

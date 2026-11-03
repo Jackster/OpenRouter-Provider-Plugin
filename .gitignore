@@ -1,0 +1,10 @@
+node_modules/
+*.log
+test-state.json
+live-*.json
+reference-*/
+installed-opencode-reference/
+sdk-reference/
+install-config/
+.DS_Store
+*.exe
