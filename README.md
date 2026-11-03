@@ -22,14 +22,14 @@ Paste this into OpenCode or any AI coding assistant:
 
 ```text
 Install the OpenCode plugin "opencode-openrouter-provider" from
-https://github.com/Jackster/opencode-openrouter-provider, add it to my
+https://github.com/Jackster/OpenRouter-Provider-Plugin, add it to my
 OpenCode configuration, and tell me how to restart so it takes effect.
 ```
 
 ### From the command line
 
 ```sh
-opencode plugin add github:Jackster/opencode-openrouter-provider
+opencode plugin add github:Jackster/OpenRouter-Provider-Plugin
 ```
 
 ### Manual configuration
@@ -39,7 +39,7 @@ Add the Git package specifier to the `plugins` array in your global `opencode.js
 ```json
 {
   "plugins": [
-    "github:Jackster/opencode-openrouter-provider"
+    "github:Jackster/OpenRouter-Provider-Plugin"
   ]
 }
 ```
@@ -47,7 +47,7 @@ Add the Git package specifier to the `plugins` array in your global `opencode.js
 ### From a local checkout
 
 ```sh
-opencode plugin add /absolute/path/to/opencode-openrouter-provider
+opencode plugin add /absolute/path/to/OpenRouter-Provider-Plugin
 ```
 
 For a manual local installation, add a `file://` URL to the `plugins` array in your global `opencode.json`:
@@ -55,7 +55,7 @@ For a manual local installation, add a `file://` URL to the `plugins` array in y
 ```json
 {
   "plugins": [
-    "file:///absolute/path/to/opencode-openrouter-provider"
+    "file:///absolute/path/to/OpenRouter-Provider-Plugin"
   ]
 }
 ```

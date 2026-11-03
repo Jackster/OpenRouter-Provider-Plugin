@@ -7,10 +7,10 @@
   "type": "module",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Jackster/opencode-openrouter-provider.git"
+    "url": "git+https://github.com/Jackster/OpenRouter-Provider-Plugin.git"
   },
-  "homepage": "https://github.com/Jackster/opencode-openrouter-provider#readme",
-  "bugs": "https://github.com/Jackster/opencode-openrouter-provider/issues",
+  "homepage": "https://github.com/Jackster/OpenRouter-Provider-Plugin#readme",
+  "bugs": "https://github.com/Jackster/OpenRouter-Provider-Plugin/issues",
   "main": "./src/server.ts",
   "exports": {
     "./gui-experimental": "./dist/gui-experimental.cjs",
