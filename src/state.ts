@@ -2,7 +2,7 @@ import { chmodSync, existsSync, mkdirSync, readFileSync, renameSync, writeFileSy
 import { dirname, join } from "node:path"
 import { homedir } from "node:os"
 import type { ProviderSelection, SessionModel, SharedState } from "./types.ts"
-import { normalizeModelID } from "./model.ts"
+import { isOpenRouterModel, normalizeModelID } from "./model.ts"
 
 export const emptyState = (): SharedState => ({ version: 1, selections: {}, sessions: {} })
 
@@ -80,4 +80,19 @@ export function rememberSessionModel(
     .slice(0, 100)
   state.sessions = Object.fromEntries(sessions)
   writeState(state, path)
+}
+
+/**
+ * The most recently remembered OpenRouter model across all sessions. New sessions have no
+ * durable model until the first message, so host "current model" APIs can return undefined;
+ * both OpenCode frontends default a new session to the most recent model, making this the
+ * closest available answer.
+ */
+export function mostRecentOpenRouterModel(path = statePath()): string | undefined {
+  let best: SessionModel | undefined
+  for (const session of Object.values(readState(path).sessions)) {
+    if (!isOpenRouterModel(session.providerID, session.modelID)) continue
+    if (!best || session.updatedAt > best.updatedAt) best = session
+  }
+  return best?.modelID
 }

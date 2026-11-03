@@ -276,6 +276,14 @@ function clearProvider(modelID, path = statePath()) {
   delete state.selections[normalizeModelID(modelID)];
   writeState(state, path);
 }
+function mostRecentOpenRouterModel(path = statePath()) {
+  let best;
+  for (const session of Object.values(readState(path).sessions)) {
+    if (!isOpenRouterModel(session.providerID, session.modelID)) continue;
+    if (!best || session.updatedAt > best.updatedAt) best = session;
+  }
+  return best?.modelID;
+}
 
 // src/tui.tsx
 function currentSessionID(ctx) {
@@ -285,16 +293,17 @@ function currentSessionID(ctx) {
 function currentModel(ctx, sessionID) {
   const current = ctx.ui.model.current();
   if (current) return isOpenRouterModel(current.providerID, current.modelID) ? normalizeModelID(current.modelID) : "";
-  if (!sessionID) return "";
-  const remembered = readState().sessions[sessionID];
-  if (remembered) return isOpenRouterModel(remembered.providerID, remembered.modelID) ? remembered.modelID : "";
-  const messages = ctx.data.session.message.list(sessionID);
-  for (let index = messages.length - 1; index >= 0; index--) {
-    const message = messages[index];
-    if (message.type !== "assistant") continue;
-    return isOpenRouterModel(message.model.providerID, message.model.id) ? normalizeModelID(message.model.id) : "";
+  if (sessionID) {
+    const remembered = readState().sessions[sessionID];
+    if (remembered) return isOpenRouterModel(remembered.providerID, remembered.modelID) ? remembered.modelID : "";
+    const messages = ctx.data.session.message.list(sessionID);
+    for (let index = messages.length - 1; index >= 0; index--) {
+      const message = messages[index];
+      if (message.type !== "assistant") continue;
+      return isOpenRouterModel(message.model.providerID, message.model.id) ? normalizeModelID(message.model.id) : "";
+    }
   }
-  return "";
+  return mostRecentOpenRouterModel() ?? "";
 }
 function toast(ctx, message, variant = "success") {
   ctx.ui.toast.show({

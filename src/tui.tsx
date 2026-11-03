@@ -8,7 +8,7 @@ import { isOpenRouterModel, normalizeModelID, shortModelID } from "./model.ts"
 import { fetchProviders } from "./openrouter.ts"
 import { nextProviderSort, priceExtreme, priceExtremes, providerSortLabel, sortProviders } from "./providers.ts"
 import type { PriceKey, ProviderSort } from "./providers.ts"
-import { clearProvider, getSelection, readState, selectProvider } from "./state.ts"
+import { clearProvider, getSelection, mostRecentOpenRouterModel, readState, selectProvider } from "./state.ts"
 import type { ProviderInfo } from "./types.ts"
 
 function currentSessionID(ctx: Context): string | undefined {
@@ -18,19 +18,22 @@ function currentSessionID(ctx: Context): string | undefined {
 
 function currentModel(ctx: Context, sessionID?: string): string {
   const current = ctx.ui.model.current()
+  // A defined non-OpenRouter selection wins: never fall back over an explicit choice.
   if (current) return isOpenRouterModel(current.providerID, current.modelID) ? normalizeModelID(current.modelID) : ""
-  if (!sessionID) return ""
+  if (sessionID) {
+    const remembered = readState().sessions[sessionID]
+    if (remembered) return isOpenRouterModel(remembered.providerID, remembered.modelID) ? remembered.modelID : ""
 
-  const remembered = readState().sessions[sessionID]
-  if (remembered) return isOpenRouterModel(remembered.providerID, remembered.modelID) ? remembered.modelID : ""
-
-  const messages = ctx.data.session.message.list(sessionID)
-  for (let index = messages.length - 1; index >= 0; index--) {
-    const message = messages[index]
-    if (message.type !== "assistant") continue
-    return isOpenRouterModel(message.model.providerID, message.model.id) ? normalizeModelID(message.model.id) : ""
+    const messages = ctx.data.session.message.list(sessionID)
+    for (let index = messages.length - 1; index >= 0; index--) {
+      const message = messages[index]
+      if (message.type !== "assistant") continue
+      return isOpenRouterModel(message.model.providerID, message.model.id) ? normalizeModelID(message.model.id) : ""
+    }
   }
-  return ""
+  // New sessions have no durable model until the first message, so the host can report
+  // nothing; the most recently used OpenRouter model is what the session will send with.
+  return mostRecentOpenRouterModel() ?? ""
 }
 
 function toast(ctx: Context, message: string, variant: "success" | "error" | "info" = "success"): void {

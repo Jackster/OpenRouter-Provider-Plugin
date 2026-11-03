@@ -71,7 +71,7 @@ The package exports `./server`, `./tui`, and `./gui-experimental`; OpenCode disc
 3. Click a provider. The filled dot marks the active selection.
 4. Click **Automatic routing** to remove the pin.
 
-The plugin reads the model currently selected in the prompt, including in new sessions. Provider selection affects subsequent requests, including retries and continuation turns for that model.
+The plugin reads the model currently selected in the prompt, including in new sessions. Before a new session's first message — when the host cannot name a model yet — it falls back to your most recently used OpenRouter model, which is what the new session will send with. Provider selection affects subsequent requests, including retries and continuation turns for that model.
 
 Input, output, and cache-read prices are shown separately in **USD per million tokens**. Throughput is tokens per second; latency is time to first token. Missing prices display as `—`, never as zero; unavailable metrics are omitted to reduce clutter. Region and service-tier endpoints are grouped under their routable provider slug; a `+N` suffix indicates additional variants.
 

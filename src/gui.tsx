@@ -12,6 +12,7 @@ import type { ProviderInfo } from "./types.ts"
 import css from "./gui.css?inline"
 
 interface ProvidersResult {
+  modelID: string | null
   providers: ProviderInfo[]
   selected: string | null
 }
@@ -48,41 +49,57 @@ function ProviderPanel(props: PanelProps & { ctx: Context; refreshIntervalMs: nu
   const [refresh, setRefresh] = createSignal(0)
   const [updatedAt, setUpdatedAt] = createSignal<number>()
   let generation = 0
-  let previousModel = ""
+  let previousKey = ""
 
-  const modelID = createMemo(() => {
+  // "unknown": the composer cannot name a model yet (new session before its first message).
+  // "other": the composer names a non-OpenRouter model — never fall back over that choice.
+  const composerModel = createMemo<{ kind: "openrouter"; id: string } | { kind: "other" } | { kind: "unknown" }>(() => {
     const model = props.screen.composer.model()
-    return model && isOpenRouterModel(model.providerID, model.modelID) ? normalizeModelID(model.modelID) : ""
+    if (!model) return { kind: "unknown" }
+    return isOpenRouterModel(model.providerID, model.modelID)
+      ? { kind: "openrouter", id: normalizeModelID(model.modelID) }
+      : { kind: "other" }
+  })
+  const [fallbackModel, setFallbackModel] = createSignal<string | null>(null)
+  const modelID = createMemo(() => {
+    const state = composerModel()
+    if (state.kind === "openrouter") return state.id
+    return state.kind === "unknown" ? fallbackModel() ?? "" : ""
   })
   const sortedProviders = createMemo(() => sortProviders(providers(), sort()))
   const extremes = createMemo(() => priceExtremes(providers()))
 
   createEffect(() => {
-    const id = modelID()
+    const state = composerModel()
     refresh()
     const current = ++generation
     const controller = new AbortController()
     onCleanup(() => controller.abort())
 
-    if (id !== previousModel) {
-      previousModel = id
+    const key = state.kind === "openrouter" ? state.id : state.kind
+    if (key !== previousKey) {
+      previousKey = key
       setProviders([])
       setSelected(null)
       setUpdatedAt(undefined)
+      if (state.kind !== "unknown") setFallbackModel(null)
     }
     setError("")
-    if (!id) {
+    if (state.kind === "other") {
       setLoading(false)
       return
     }
 
     setLoading(true)
+    // With no model the server falls back to the most recently used OpenRouter model.
+    const request = state.kind === "openrouter" ? { modelID: state.id } : {}
     void openRouterKey(ctx.client).then((apiKey) => {
       if (controller.signal.aborted) return undefined
-      return rpc().providers({ modelID: id, ...(apiKey ? { apiKey } : {}) }, { signal: controller.signal })
+      return rpc().providers({ ...request, ...(apiKey ? { apiKey } : {}) }, { signal: controller.signal })
     }).then((result) => {
       if (!result || current !== generation) return
       const value = result as ProvidersResult
+      if (state.kind === "unknown") setFallbackModel(value.modelID)
       setProviders(value.providers)
       setSelected(value.selected)
       setUpdatedAt(Date.now())

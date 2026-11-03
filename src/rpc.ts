@@ -30,8 +30,9 @@ export const OpenRouterRpc = Rpc.define({
       input: {
         type: "object",
         additionalProperties: false,
-        required: ["modelID"],
         properties: {
+          // Optional: omitted on new sessions where the host cannot report a model yet;
+          // the server then falls back to the most recently used OpenRouter model.
           modelID,
           // The GUI reads the active credential and uses it only for this lookup.
           apiKey: { type: "string", minLength: 1 },
@@ -40,8 +41,9 @@ export const OpenRouterRpc = Rpc.define({
       output: {
         type: "object",
         additionalProperties: false,
-        required: ["providers", "selected"],
+        required: ["modelID", "providers", "selected"],
         properties: {
+          modelID: { type: ["string", "null"] },
           providers: { type: "array", items: providerSchema },
           selected: { type: ["string", "null"] },
         },

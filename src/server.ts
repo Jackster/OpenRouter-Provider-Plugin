@@ -3,7 +3,7 @@ import { normalizeModelID } from "./model.ts"
 import { fetchProviders } from "./openrouter.ts"
 import { OpenRouterRpc } from "./rpc.ts"
 import { applySelection } from "./routing.ts"
-import { clearProvider, getSelection, rememberSessionModel, selectProvider } from "./state.ts"
+import { clearProvider, getSelection, mostRecentOpenRouterModel, rememberSessionModel, selectProvider } from "./state.ts"
 
 function requiredString(value: unknown, field: string): string {
   if (typeof value !== "string" || !value.trim()) throw new Error(`${field} must be a non-empty string`)
@@ -14,9 +14,14 @@ const setup: Plugin["setup"] = async (ctx) => {
   await ctx.rpc?.register(OpenRouterRpc, {
     providers: async (value) => {
       const input = value as { modelID?: unknown; apiKey?: unknown }
-      const modelID = normalizeModelID(requiredString(input.modelID, "modelID"))
       const apiKey = input.apiKey === undefined ? undefined : requiredString(input.apiKey, "apiKey")
+      const modelID = input.modelID === undefined
+        // The composer cannot name a model before a new session's first message.
+        ? mostRecentOpenRouterModel()
+        : normalizeModelID(requiredString(input.modelID, "modelID"))
+      if (!modelID) return { modelID: null, providers: [], selected: null }
       return {
+        modelID,
         providers: await fetchProviders(modelID, { apiKey }),
         selected: getSelection(modelID)?.provider ?? null,
       }
